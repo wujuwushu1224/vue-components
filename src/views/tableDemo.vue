@@ -1,14 +1,19 @@
 <template>
   <div class="container">
+    <!-- 第一种方式 -->
     <w-table :columns="tTitle" :tableData="tableData"></w-table>
+    <!-- 第二种方式 -->
+    <!-- <z-table :columns="tTitle" :tableData="tableData"></z-table> -->
   </div>
 </template>
 
 <script>
-import wTable from "../components/table";
+import WTable from "../components/table";
+import ZTable from "../components/table/table2";
 export default {
   components: {
-    wTable
+    WTable,
+    ZTable
   },
   data() {
     return {

@@ -1,14 +1,14 @@
 <template>
-  <div @touchend="handleTouchend" class="table-page">
-    <div class="left-table" style="width:134px">
+  <div @touchend="handleTouchend" class="table-page" >
+    <div :style="`transform:translate3d(0px,-${scrollY}px,0px)`" class="left-table" style="width:134px">
       <div class="table__header-wrapper" ref="scrollHead1">
         <table style="width: 1000px;" class="table__header">
           <colgroup>
-            <col :key="index" v-for="(column, index) in tTitle" :width="column.width" />
+            <col :key="index" v-for="(column, index) in columns" :width="column.width" />
           </colgroup>
           <thead>
             <tr>
-              <th :key="index" v-for="(item,index) in tTitle">
+              <th :key="index" v-for="(item,index) in columns">
                 <div class="cell">{{item.name}}</div>
               </th>
             </tr>
@@ -18,11 +18,11 @@
       <div class="wrapper table__body-wrapper">
         <table style="width: 1000px;" ref="table" class="table">
           <colgroup>
-            <col :key="index" v-for="(column, index) in tTitle" :width="column.width" />
+            <col :key="index" v-for="(column, index) in columns" :width="column.width" />
           </colgroup>
-          <tbody>
+          <tbody >
             <tr :key="idnex" v-for="(item,idnex) in tableData">
-              <template v-for="(item2,idnex2) in tTitle">
+              <template v-for="(item2,idnex2) in columns">
                 <td :key="idnex2">
                   <div class="cell">{{item[item2.prop]}}</div>
                 </td>
@@ -33,37 +33,35 @@
       </div>
     </div>
 
-    <!-- <div
-      v-show="showTableHead"
-      :style="`transform:translate3d(${-tanslate3dTheadX}px,0px,0px)`"
-      ref="scrollHead"
-      class="table-fixed-head"
-    >
+    <div v-show="showTableHead" ref="scrollHead" class="table-fixed-head">
       <table style="width: 1000px;" class="table">
         <colgroup>
-          <col :key="index" v-for="(column, index) in tTitle" :width="column.width" />
+          <col :key="index" v-for="(column, index) in columns" :width="column.width" />
         </colgroup>
         <thead>
           <tr>
-            <th :key="index" v-for="(item,index) in tTitle">
-              <div class="cell">{{item.name}}</div>
+            <th :key="index" v-for="(item,index) in columns">
+              <div
+                :style="item.prop!=fixedProp?`transform:translate3d(${-scrollX}px,${scrollY}px,0px);z-index:99`:`transform:translate3d(0px,${scrollY}px,0px);z-index:999`"
+                class="cell"
+              >{{item.name}}</div>
             </th>
           </tr>
         </thead>
       </table>
-    </div>-->
+    </div>
 
-    <div class="middle-table">
-      <div style="height:100%" v-on:scroll="handleScroll" ref="tableScroll">
+    <div  @scroll="handleScrollPage" ref="tablePage" class="middle-table">
+      <div style="overflow-x:auto" v-on:scroll="handleScroll" ref="tableScroll">
         <div class="table__header-wrapper" ref="scrollHead1">
           <!-- 表头内容 -->
           <table style="width: 1000px;" class="table__header">
             <colgroup>
-              <col :key="index" v-for="(column, index) in tTitle" :width="column.width" />
+              <col :key="index" v-for="(column, index) in columns" :width="column.width" />
             </colgroup>
             <thead>
               <tr>
-                <th :key="index" v-for="(item,index) in tTitle">
+                <th :key="index" v-for="(item,index) in columns">
                   <div class="cell">{{item.name}}</div>
                 </th>
               </tr>
@@ -74,11 +72,11 @@
           <!-- 表体内容 -->
           <table style="width: 1000px;" ref="table" class="table">
             <colgroup>
-              <col :key="index" v-for="(column, index) in tTitle" :width="column.width" />
+              <col :key="index" v-for="(column, index) in columns" :width="column.width" />
             </colgroup>
             <tbody>
               <tr :key="idnex" v-for="(item,idnex) in tableData">
-                <template v-for="(item2,idnex2) in tTitle">
+                <template v-for="(item2,idnex2) in columns">
                   <td :key="idnex2">
                     <div class="cell">{{item[item2.prop]}}</div>
                     <!-- <div v-if="item2.prop!='date'" class="cell">{{item[item2.prop]}}</div>
@@ -97,286 +95,40 @@
 <script>
 import BScroll from "better-scroll";
 export default {
+  props: ["columns", "tableData"],
   data() {
     return {
-      tTitle: [
-        {
-          name: "日期",
-          prop: "date",
-          width: 50,
-          fixed: "left"
-        },
-        {
-          name: "姓名",
-          prop: "name",
-          width: 50
-        },
-        {
-          name: "省份",
-          prop: "province",
-          width: 50
-        },
-        {
-          name: "市区",
-          prop: "city",
-          width: 50
-        },
-        {
-          name: "地址",
-          prop: "address",
-          width: 120
-        },
-        {
-          name: "邮编",
-          prop: "zip",
-          width: 50
-        }
-      ],
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        }
-      ],
-      tanslate3dTheadX: "",
-      showTableHead: true,
-      leftWidth: ""
+      fixedProp: "date",
+      scrollY: "",
+      scrollX: "",
+      showTableHead: false,
+      timer: ""
     };
   },
   watch: {},
-  mounted() {
-    window.addEventListener("scroll", () => {
-      this.showTableHead = false;
-    });
-  },
+  mounted() {},
   methods: {
-    handleScroll(e) {
+    handleScroll() {
       // this.scrollValue = this.$refs.tableScroll.scrollLeft;
-      this.tanslate3dTheadX = this.$refs.tableScroll.scrollLeft;
-      console.log(this.tanslate3dTheadX);
+      this.scrollX = this.$refs.tableScroll.scrollLeft;
+      console.log(this.scrollX);
     },
-    handleTouchend() {
-      this.showTableHead = true;
+    handleTouchend() {},
+    handleScrollPage() {
+      clearTimeout(this.timer);
+      // this.timer = setTimeout(() => {
+      //   if (this.scrollY === this.$refs.tablePage.scrollTop) {
+      //     console.log("滚动停止");
+      //     if (this.$refs.tablePage.scrollTop === 0) {
+      //       this.showTableHead = false;
+      //     } else {
+      //       this.showTableHead = true;
+      //     }
+      //   }
+      // }, 200);
+      this.showTableHead = false;
+      this.scrollY = this.$refs.tablePage.scrollTop;
+      console.log(this.scrollY)
     }
   }
 };
@@ -385,6 +137,7 @@ export default {
 <style scoped lang='scss'>
 * {
   box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -398,44 +151,52 @@ table {
 }
 
 .table-page {
+  background: red;
   position: relative;
+  margin: 20px;
   height: 100%;
   overflow: hidden;
+  border: 1px solid #eee;
   .left-table {
     position: absolute;
     left: 0;
     top: 0;
-    overflow-x: hidden;
+    overflow: hidden;
     background: #fff;
-    z-index: 999;
+    z-index: 99;
   }
   .table-fixed-head {
-    position: fixed;
+    position: absolute;
     top: 0;
-    z-index: 999;
-    background: red;
+    left: 0;
+    // z-index: 999;
+    .cell {
+      background: #fff;
+      padding: 0;
+      text-align: center;
+      display: inline-block;
+      box-sizing: border-box;
+      position: relative;
+      vertical-align: top;
+    }
   }
   .middle-table {
+    z-index: 9;
     height: 100%;
-    
+    overflow-y: auto;
+    .table__body-wrapper {
+      .table {
+      }
+    }
   }
 }
 
 .table__header-wrapper {
-  overflow-x: hidden;
-  background: rgb(255, 255, 255);
   width: 100%;
   .table__header {
     table-layout: fixed;
     background: white;
   }
-}
-.table__body-wrapper {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x:auto;
-  position: relative;
 }
 
 .cell {
@@ -446,5 +207,6 @@ table {
   vertical-align: middle;
   padding-left: 0.625rem;
   padding-right: 0.625rem;
+  width: 100%;
 }
 </style>

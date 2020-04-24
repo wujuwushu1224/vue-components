@@ -1,5 +1,11 @@
 <template>
-  <div @scroll="handleScrollPage" @touchend="handleTouchend" class="table-page" ref="tablePage">
+  <div
+    @scroll.stop="handleScrollPage"
+    @touchstart.stop="handleTouchStart"
+    @touchend.stop="handleTouchend"
+    class="table-page"
+    ref="tablePage"
+  >
     <div class="left-table" style="width:134px">
       <div class="table__header-wrapper" ref="scrollHead1">
         <table style="width: 1000px;" class="table__header">
@@ -52,7 +58,7 @@
     </div>
 
     <div class="middle-table">
-      <div style="overflow-x:auto" v-on:scroll="handleScroll" ref="tableScroll">
+      <div style="overflow-x:auto" @scroll.stop="handleScroll" ref="tableScroll">
         <div class="table__header-wrapper" ref="scrollHead1">
           <!-- 表头内容 -->
           <table style="width: 1000px;" class="table__header">
@@ -113,12 +119,19 @@ export default {
       this.scrollX = this.$refs.tableScroll.scrollLeft;
       // console.log(this.scrollX);
     },
-    handleTouchend() {},
+    handleTouchStart() {
+      this.raise = false;
+    },
+    handleTouchend() {
+      this.raise = true;
+      this.showTableHead = true;
+    },
     handleScrollPage() {
       clearTimeout(this.timer);
+      console.log(this.scrollY, this.$refs.tablePage.scrollTop);
       this.timer = setTimeout(() => {
-        if (this.scrollY === this.$refs.tablePage.scrollTop) {
-          console.log("滚动停止");
+        if (this.scrollY === this.$refs.tablePage.scrollTop && this.raise) {
+          console.log("滚动停止并已经抬起手指");
           if (this.$refs.tablePage.scrollTop === 0) {
             this.showTableHead = false;
           } else {
@@ -128,6 +141,7 @@ export default {
       }, 200);
       this.showTableHead = false;
       this.scrollY = this.$refs.tablePage.scrollTop;
+      // console.log(this.scrollY)
     }
   }
 };
@@ -136,6 +150,11 @@ export default {
 <style scoped lang='scss'>
 * {
   box-sizing: border-box;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none; //webkit浏览器/
+  -moz-user-select: none; //火狐/
+  -ms-user-select: none; //IE10/
+  user-select: none;
 }
 
 table {
@@ -149,14 +168,18 @@ table {
 }
 
 .table-page {
+  background: red;
   position: relative;
+  margin: 20px;
   height: 100%;
   overflow-y: auto;
+  -webkit-overflow-scrolling: auto;
+  border: 1px solid #eee;
   .left-table {
     position: absolute;
     left: 0;
     top: 0;
-    overflow-x: hidden;
+    overflow: hidden;
     background: #fff;
     z-index: 99;
   }
