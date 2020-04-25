@@ -84,9 +84,8 @@
               <tr :key="idnex" v-for="(item,idnex) in tableData">
                 <template v-for="(item2,idnex2) in columns">
                   <td :key="idnex2">
-                    <div class="cell">{{item[item2.prop]}}</div>
-                    <!-- <div v-if="item2.prop!='date'" class="cell">{{item[item2.prop]}}</div>
-                    <div v-else class="cell"></div>-->
+                    <div v-if="item2.prop!=fixedProp" class="cell">{{item[item2.prop]}}</div>
+                    <div v-else class="cell"></div>
                   </td>
                 </template>
               </tr>
@@ -99,7 +98,7 @@
 </template>
 
 <script>
-import BScroll from "better-scroll";
+// import BScroll from "better-scroll";
 export default {
   props: ["columns", "tableData"],
   data() {
@@ -128,7 +127,7 @@ export default {
     },
     handleScrollPage() {
       clearTimeout(this.timer);
-      console.log(this.scrollY, this.$refs.tablePage.scrollTop);
+      // console.log(this.scrollY, this.$refs.tablePage.scrollTop);
       this.timer = setTimeout(() => {
         if (this.scrollY === this.$refs.tablePage.scrollTop && this.raise) {
           console.log("滚动停止并已经抬起手指");
@@ -168,11 +167,12 @@ table {
 }
 
 .table-page {
-  background: red;
+  background: #fff;
   position: relative;
   margin: 20px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: auto;
   border: 1px solid #eee;
   .left-table {

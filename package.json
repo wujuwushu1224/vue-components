@@ -13,7 +13,6 @@
     "element-ui": "^2.13.1",
     "iscroll": "^5.2.0",
     "less-loader": "^5.0.0",
-    "node-sass": "^4.13.1",
     "sass-loader": "^8.0.2",
     "vue": "^2.6.11",
     "vue-datatable": "^1.0.4",
