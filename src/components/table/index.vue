@@ -88,7 +88,10 @@
               <tr>
                 <th :key="index"
                   v-for="(item,index) in columns">
-                  <div class="cell">{{item.name}}</div>
+                  <div></div>
+                   <div v-if="!item.fixed"
+                      class="cell">{{item.name}}</div>
+                  <div v-else class="cell"></div>
                 </th>
               </tr>
             </thead>
@@ -188,9 +191,14 @@ export default {
 table {
   border-collapse: collapse;
   table-layout: fixed;
+  th{
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+  }
   td {
     white-space: nowrap;
-    border-bottom: 1px solid #999;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
     text-align: center;
   }
 }
@@ -219,12 +227,8 @@ table {
     // z-index: 999;
     .cell {
       background: #fff;
-      padding: 0;
-      text-align: center;
-      display: inline-block;
-      box-sizing: border-box;
-      position: relative;
       vertical-align: top;
+      border-bottom: 1px solid #eee;
     }
   }
   .middle-table {
@@ -250,8 +254,7 @@ table {
   box-sizing: border-box;
   position: relative;
   vertical-align: middle;
-  padding-left: 0.625rem;
-  padding-right: 0.625rem;
+  padding: 0.625rem;
   width: 100%;
 }
 </style>
