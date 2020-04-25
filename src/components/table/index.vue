@@ -1,20 +1,24 @@
 <template>
-  <div
-    @scroll.stop="handleScrollPage"
+  <div @scroll.stop="handleScrollPage"
     @touchstart.stop="handleTouchStart"
     @touchend.stop="handleTouchend"
     class="table-page"
-    ref="tablePage"
-  >
-    <div class="left-table" style="width:134px">
-      <div class="table__header-wrapper" ref="scrollHead1">
-        <table style="width: 1000px;" class="table__header">
+    ref="tablePage">
+    <div class="left-table"
+      style="width:134px">
+      <div class="table__header-wrapper"
+        ref="scrollHead1">
+        <table style="width: 1000px;"
+          class="table__header">
           <colgroup>
-            <col :key="index" v-for="(column, index) in columns" :width="column.width" />
+            <col :key="index"
+              v-for="(column, index) in columns"
+              :width="column.width" />
           </colgroup>
           <thead>
             <tr>
-              <th :key="index" v-for="(item,index) in columns">
+              <th :key="index"
+                v-for="(item,index) in columns">
                 <div class="cell">{{item.name}}</div>
               </th>
             </tr>
@@ -22,12 +26,17 @@
         </table>
       </div>
       <div class="wrapper table__body-wrapper">
-        <table style="width: 1000px;" ref="table" class="table">
+        <table style="width: 1000px;"
+          ref="table"
+          class="table">
           <colgroup>
-            <col :key="index" v-for="(column, index) in columns" :width="column.width" />
+            <col :key="index"
+              v-for="(column, index) in columns"
+              :width="column.width" />
           </colgroup>
           <tbody>
-            <tr :key="idnex" v-for="(item,idnex) in tableData">
+            <tr :key="idnex"
+              v-for="(item,idnex) in tableData">
               <template v-for="(item2,idnex2) in columns">
                 <td :key="idnex2">
                   <div class="cell">{{item[item2.prop]}}</div>
@@ -39,18 +48,22 @@
       </div>
     </div>
 
-    <div v-show="showTableHead" ref="scrollHead" class="table-fixed-head">
-      <table style="width: 1000px;" class="table">
+    <div v-show="showTableHead"
+      ref="scrollHead"
+      class="table-fixed-head">
+      <table style="width: 1000px;"
+        class="table">
         <colgroup>
-          <col :key="index" v-for="(column, index) in columns" :width="column.width" />
+          <col :key="index"
+            v-for="(column, index) in columns"
+            :width="column.width" />
         </colgroup>
         <thead>
           <tr>
-            <th :key="index" v-for="(item,index) in columns">
-              <div
-                :style="item.prop!=fixedProp?`transform:translate3d(${-scrollX}px,${scrollY}px,0px);z-index:99`:`transform:translate3d(0px,${scrollY}px,0px);z-index:999`"
-                class="cell"
-              >{{item.name}}</div>
+            <th :key="index"
+              v-for="(item,index) in columns">
+              <div :style="!item.fixed?`transform:translate3d(${-scrollX}px,${scrollY}px,0px);z-index:99`:`transform:translate3d(0px,${scrollY}px,0px);z-index:999`"
+                class="cell">{{item.name}}</div>
             </th>
           </tr>
         </thead>
@@ -58,16 +71,23 @@
     </div>
 
     <div class="middle-table">
-      <div style="overflow-x:auto" @scroll.stop="handleScroll" ref="tableScroll">
-        <div class="table__header-wrapper" ref="scrollHead1">
+      <div style="overflow-x:auto"
+        @scroll.stop="handleScroll"
+        ref="tableScroll">
+        <div class="table__header-wrapper"
+          ref="scrollHead1">
           <!-- 表头内容 -->
-          <table style="width: 1000px;" class="table__header">
+          <table style="width: 1000px;"
+            class="table__header">
             <colgroup>
-              <col :key="index" v-for="(column, index) in columns" :width="column.width" />
+              <col :key="index"
+                v-for="(column, index) in columns"
+                :width="column.width" />
             </colgroup>
             <thead>
               <tr>
-                <th :key="index" v-for="(item,index) in columns">
+                <th :key="index"
+                  v-for="(item,index) in columns">
                   <div class="cell">{{item.name}}</div>
                 </th>
               </tr>
@@ -76,16 +96,23 @@
         </div>
         <div class="wrapper table__body-wrapper">
           <!-- 表体内容 -->
-          <table style="width: 1000px;" ref="table" class="table">
+          <table style="width: 1000px;"
+            ref="table"
+            class="table">
             <colgroup>
-              <col :key="index" v-for="(column, index) in columns" :width="column.width" />
+              <col :key="index"
+                v-for="(column, index) in columns"
+                :width="column.width" />
             </colgroup>
             <tbody>
-              <tr :key="idnex" v-for="(item,idnex) in tableData">
+              <tr :key="idnex"
+                v-for="(item,idnex) in tableData">
                 <template v-for="(item2,idnex2) in columns">
                   <td :key="idnex2">
-                    <div v-if="item2.prop!=fixedProp" class="cell">{{item[item2.prop]}}</div>
-                    <div v-else class="cell"></div>
+                    <div v-if="!item2.fixed"
+                      class="cell">{{item[item2.prop]}}</div>
+                    <div v-else
+                      class="cell"></div>
                   </td>
                 </template>
               </tr>
@@ -101,9 +128,9 @@
 // import BScroll from "better-scroll";
 export default {
   props: ["columns", "tableData"],
-  data() {
+  data () {
     return {
-      fixedProp: "date",
+      // fixedProp: "date",
       scrollY: "",
       scrollX: "",
       showTableHead: false,
@@ -111,21 +138,23 @@ export default {
     };
   },
   watch: {},
-  mounted() {},
+  mounted () { },
   methods: {
-    handleScroll() {
+    handleScroll () {
       // this.scrollValue = this.$refs.tableScroll.scrollLeft;
       this.scrollX = this.$refs.tableScroll.scrollLeft;
       // console.log(this.scrollX);
     },
-    handleTouchStart() {
+    handleTouchStart () {
       this.raise = false;
     },
-    handleTouchend() {
+    handleTouchend () {
       this.raise = true;
-      this.showTableHead = true;
+      if (this.scrollY != 0) {
+        this.showTableHead = true;
+      }
     },
-    handleScrollPage() {
+    handleScrollPage () {
       clearTimeout(this.timer);
       // console.log(this.scrollY, this.$refs.tablePage.scrollTop);
       this.timer = setTimeout(() => {

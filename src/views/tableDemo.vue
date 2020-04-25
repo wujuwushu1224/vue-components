@@ -22,12 +22,12 @@ export default {
           name: "日期",
           prop: "date",
           width: 50,
-          fixed: "left"
+          fixed: true
         },
         {
           name: "姓名",
           prop: "name",
-          width: 50
+          width: 50,
         },
         {
           name: "省份",
